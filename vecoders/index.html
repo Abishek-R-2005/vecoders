@@ -3,21 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Scene | Artist Registration</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rammetto+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <title>Vecoders | Escape-the Snap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rammetto+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Rubik', sans-serif;
-      background: #aaaaaa;
       color: #111;
-      background-image: url(marvel.png);
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: cover;
-      
+    }
+    /* Background video styling */
+    #background-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
     }
     .logo-default{
         width: 20%;
@@ -192,22 +196,61 @@
     .dropdown-list li:hover {
       background: #f0f0f0;
     }
-    .video-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      min-width: 100%;
-      min-height: 100%;
-      object-fit: cover;
-      z-index: -1;
-      opacity: 100; 
+
+    /* WhatsApp Group UI */
+    .join {
+      display: none;
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #333;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 12px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      margin: 10% auto;
+    }
+    .join h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #5e239d;
+    }
+    .join a {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #7F55B1;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .join a:hover {
+      background-color: #5e239d;
+      transform: scale(1.05);
+    }
+    @media (max-width: 480px) {
+      .join h1 {
+        font-size: 20px;
+      }
+      .join a {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2 class="form-title">Escape The Snap</h2>
-    <p style="color: #111;">Fill out your details to assemble in Avengers</p>
+  <!-- Background Video -->
+  <video autoplay muted loop id="background-video">
+    <source src="/Users/abishekr/Downloads/Avengers Assemble (Group up) _ Meme Template _ [4k 60fps](1080P_60FPS).mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+
+  <!-- Registration Form -->
+  <div class="container" id="registrationSection">
+    <h2 class="form-title">Escape The Snap - VeCoders</h2>
+    <p style="color: #111;">Assemble your Avengers! Register your team now by submitting the form for Escape the Snap! 🔥</p>
 
     <form id="artistForm">
       <!-- Team Name -->
@@ -298,34 +341,33 @@
       </select>
       <br><br>
 
-      <!-- WhatsApp Group -->
-      <br>
+      <!-- Submit -->
       <button type="submit" id="artistbutton" >Submit</button>
     </form>
+  </div>
+
+  <!-- WhatsApp Group Section -->
+  <div class="join" id="whatsappSection">
+    <h1>Join the WhatsApp Group</h1>
+    <a href="https://chat.whatsapp.com/GylgLZ36e3XDCe8XYcXyoO?mode=ems_copy_t">Click Here</a>
   </div>
 
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('artistForm');
     const submitBtn = document.getElementById('artistbutton');
-    const successMessage = document.getElementById('successMessage');
-    const errorMessage = document.getElementById('errorMessage');
+    const registrationSection = document.getElementById('registrationSection');
+    const whatsappSection = document.getElementById('whatsappSection');
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
-      alert("Thanks for registering! We'll be in touch soon.")
-      // Hide existing messages
-      if (successMessage) successMessage.style.display = 'none';
-      if (errorMessage) errorMessage.style.display = 'none';
+      alert("Thanks for registering! We'll be in touch soon.");
 
-      // Disable button
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting...';
 
-      // Build formData for Google Apps Script
       const formData = new FormData(form);
 
-      // Send to Google Apps Script doPost
       fetch('https://script.google.com/macros/s/AKfycbxOUf2FzffLRYx6TnhGZ10pTO2QrCxfK9yVlJSdl6y-Ec2zt4e-mdlyK9nhq_JVS4K0VA/exec', {
         method: 'POST',
         body: formData
@@ -333,28 +375,21 @@
       .then(response => response.json())
       .then(data => {
         if (data.result === 'success') {
-          if (successMessage) {
-            successMessage.style.display = 'block';
-            successMessage.scrollIntoView({ behavior: 'smooth' });
-          }
-
           form.reset();
 
-          // Redirect after 2s
+          // Hide form and show WhatsApp join
           setTimeout(() => {
-            window.location.href = "index4.html";
+            registrationSection.style.display = "none";
+            whatsappSection.style.display = "block";
           }, 1000);
+
         } else {
           throw new Error(data.message || 'Submission failed');
         }
       })
       .catch(error => {
         console.error('Error:', error);
-        if (errorMessage) {
-          errorMessage.style.display = 'block';
-          errorMessage.textContent = `There was a problem submitting your registration: ${error.message}. Please try again.`;
-          errorMessage.scrollIntoView({ behavior: 'smooth' });
-        }
+        alert(`There was a problem submitting your registration: ${error.message}. Please try again.`);
       })
       .finally(() => {
         submitBtn.disabled = false;
@@ -362,8 +397,6 @@
       });
     });
   });
-
   </script>
-
 </body>
 </html>
